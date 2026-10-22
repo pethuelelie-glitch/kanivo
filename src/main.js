@@ -243,14 +243,13 @@ window.addEventListener('scroll', onScroll, { passive: true })
 onScroll()
 
 const links = $$('.nav nav a')
+const inView = new Set()
 const spy = new IntersectionObserver((entries) => {
-  entries.forEach((e) => {
-    if (!e.isIntersecting) return
-    links.forEach((a) => {
-      const on = a.getAttribute('href') === `#${e.target.id}`
-      a.classList.toggle('is-current', on)
-      on ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current')
-    })
+  entries.forEach((e) => (e.isIntersecting ? inView.add(e.target.id) : inView.delete(e.target.id)))
+  links.forEach((a) => {
+    const on = inView.has(a.getAttribute('href').slice(1))
+    a.classList.toggle('is-current', on)
+    on ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current')
   })
 }, { rootMargin: '-45% 0px -50% 0px' })
 links.forEach((a) => { const s = $(a.getAttribute('href')); if (s) spy.observe(s) })
