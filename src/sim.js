@@ -124,7 +124,7 @@ export function initSim(root, { gsap } = {}) {
       g.querySelector('.halo').setAttribute('r', (9 + Math.sqrt(row.c.pop) / 70) * (1.6 + row.risk * 2.6))
       g.querySelector('.score').textContent = `${Math.round(row.risk * 100)}`
       g.classList.toggle('is-red', row.lvl.key === 'red')
-      g.setAttribute('aria-label', `${row.c.name} : risque ${row.lvl.label.toLowerCase()}, ${Math.round(row.risk * 100)} sur 100`)
+      g.setAttribute('aria-label', `${row.c.name} ${Math.round(row.risk * 100)} sur 100, niveau ${row.lvl.label.toLowerCase()}`)
     }
 
     tweenNumber(kpi('exposed'), 'exposed', res.exposed)
