@@ -90,7 +90,7 @@ function defineLayouts(bgTitle, bgSection) {
     background: { data: bgTitle },
     objects: [
       { placeholder: { options: { name: 'kicker', type: 'body', x: M, y: 1.55, w: 9, h: 0.4, fontSize: 13, bold: true, color: C.accent1, charSpacing: 3, margin: 0 }, text: '' } },
-      { placeholder: { options: { name: 'title', type: 'title', x: M, y: 2.05, w: 10.2, h: 2.2, fontFace: THEME.headFontFace, fontSize: 54, color: C.background2, margin: 0, valign: 'top' }, text: '' } },
+      { placeholder: { options: { name: 'title', type: 'title', x: M, y: 2.05, w: 10.2, h: 2.2, fontFace: THEME.headFontFace, fontSize: 54, color: C.background2, margin: 0, valign: 'top', align: 'left' }, text: '' } },
       { placeholder: { options: { name: 'subtitle', type: 'body', x: M, y: 4.35, w: 8.6, h: 1.0, fontSize: 18, color: C.background2, margin: 0, valign: 'top' }, text: '' } },
     ],
   })
@@ -99,7 +99,7 @@ function defineLayouts(bgTitle, bgSection) {
     background: { data: bgSection },
     objects: [
       { placeholder: { options: { name: 'kicker', type: 'body', x: M, y: 2.2, w: 9, h: 0.4, fontSize: 13, bold: true, color: C.accent2, charSpacing: 3, margin: 0 }, text: '' } },
-      { placeholder: { options: { name: 'title', type: 'title', x: M, y: 2.7, w: 11, h: 1.5, fontFace: THEME.headFontFace, fontSize: 60, color: C.background2, margin: 0, valign: 'top' }, text: '' } },
+      { placeholder: { options: { name: 'title', type: 'title', x: M, y: 2.7, w: 11, h: 1.5, fontFace: THEME.headFontFace, fontSize: 60, color: C.background2, margin: 0, valign: 'top', align: 'left' }, text: '' } },
       { placeholder: { options: { name: 'subtitle', type: 'body', x: M, y: 4.3, w: 10, h: 0.8, fontSize: 22, color: C.accent1, margin: 0, valign: 'top' }, text: '' } },
     ],
     slideNumber: { x: 12.1, y: 7.0, w: 0.6, h: 0.3, fontSize: 10, color: C.accent6, align: 'right' },
@@ -111,7 +111,7 @@ function defineLayouts(bgTitle, bgSection) {
     objects: [
       ...footer,
       { placeholder: { options: { name: 'kicker', type: 'body', x: M, y: 0.42, w: 9, h: 0.3, fontSize: 11, bold: true, color: C.accent1, charSpacing: 3, margin: 0 }, text: '' } },
-      { placeholder: { options: { name: 'title', type: 'title', x: M, y: 0.75, w: 12.1, h: 0.95, fontFace: THEME.headFontFace, fontSize: 30, color: C.background2, margin: 0, valign: 'top' }, text: '' } },
+      { placeholder: { options: { name: 'title', type: 'title', x: M, y: 0.75, w: 12.1, h: 0.95, fontFace: THEME.headFontFace, fontSize: 30, color: C.background2, margin: 0, valign: 'top', align: 'left' }, text: '' } },
       { placeholder: { options: { name: 'source', type: 'body', x: M, y: 6.62, w: 12.1, h: 0.3, fontSize: 10, italic: true, color: C.accent6, margin: 0, valign: 'top' }, text: '' } },
     ],
     slideNumber: { x: 12.1, y: 7.0, w: 0.6, h: 0.3, fontSize: 10, color: C.accent6, align: 'right' },
@@ -135,7 +135,10 @@ function card(s, x, y, w, h, opts = {}) {
     line: { color: opts.line || HEX.line, width: opts.lineWidth || 0.75 },
   })
 }
+// Espaces insécables : un nombre ne se sépare jamais de son unité ni de ses milliers.
+const nb = (t) => t.replace(/(\d) (?=\d{3})/g, '$1 ').replace(/(\d) (?=(%|t|M|M\$|j|mm|km|min)(?![\p{L}]))/gu, '$1 ').replace(/([≥<×→]) /g, '$1 ')
 function text(s, t, o) {
+  t = typeof t === 'string' ? nb(t) : t.map((run) => ({ ...run, text: nb(run.text) }))
   s.addText(t, { isTextBox: true, margin: 0, valign: 'top', color: C.background2, fontSize: 14, objectName: id('texte'), ...o })
 }
 function badge(s, x, y, label, color = C.accent1, d = 0.5) {
@@ -236,7 +239,7 @@ async function build() {
 
   /* 5 — Exposition */
   s = content('Problème et données', '03 · Exposition', 'Écoles, hôpitaux et routes sont en première ligne', 'Sources : GFDRR City Scan Abidjan ; Banque mondiale / GFDRR, PDNA 2018 ; UNDRR, profil de risque (perte modélisée).')
-  s.addChart(pres.charts.BAR, [{ name: 'Part en zone à risque', labels: ['Surface du district', 'Écoles', 'Routes principales', 'Hôpitaux'], values: [26, 23, 22, 18] }], {
+  s.addChart(pres.charts.BAR, [{ name: 'Part en zone à risque', labels: ['Hôpitaux', 'Routes principales', 'Écoles', 'Surface du district'], values: [18, 22, 23, 26] }], {
     x: M, y: 1.85, w: 7.4, h: 4.5, barDir: 'bar', barGapWidthPct: 45, chartColors: [HEX.water],
     showValue: true, dataLabelPosition: 'outEnd', dataLabelFormatCode: '0"%"', valAxisHidden: true, valAxisMaxVal: 35, valGridLine: { style: 'none' },
     showTitle: true, title: 'Part exposée aux inondations et glissements de terrain (%)', showLegend: false, ...axis,
@@ -253,9 +256,9 @@ async function build() {
   s = content('Analyse', '04 · Arbre des causes', 'Quatre causes qui s\'entretiennent les unes les autres', 'Sources : Banque mondiale P168308 ; ONU-Habitat (données ANASUR 2016) ; GFDRR ; Gouvernement (juil. 2026) ; AIP (chaîne d\'alerte).')
   const causes = [
     ['A', 'Drainage obstrué', 'Déchets, sédiments et constructions bouchent les caniveaux. Environ 2 000 t/jour échappaient à la collecte (2016). Le curage est réactif.'],
-    ['B', 'Ville plus rapide que le plan', 'La population a plus que doublé depuis 2001. Bassins d\'orage et talwegs sont occupés.'],
+    ['B', 'Urbanisation non planifiée', 'La population a plus que doublé depuis 2001. Bassins d\'orage et talwegs sont occupés.'],
     ['C', 'Retour en zone rouge', 'Sans relogement suivi, les sites évacués sont réoccupés, comme à Attécoubé en 2026.'],
-    ['D', 'Alerte sans dernier kilomètre', 'Messages génériques, en français, relayés par WhatsApp. Rien ne confirme qu\'ils ont été reçus.'],
+    ['D', 'Alerte qui n\'arrive pas', 'Messages génériques, en français, relayés par WhatsApp. Rien ne confirme qu\'ils ont été reçus.'],
   ]
   causes.forEach(([k, t, d], i) => {
     const x = M + (i % 2) * 4.3, y = 1.95 + Math.floor(i / 2) * 2.3
@@ -288,7 +291,7 @@ async function build() {
   })
 
   /* 8 — Existant */
-  s = content('Analyse', '06 · Pourquoi l\'existant échoue', 'Les investissements existent, la boucle d\'entretien et d\'alerte manque', 'Sources : BAD (bassin du Gourou, PAACA : 16,15 km de canaux) ; DG Trésor (FASEP, 2022) ; Abidjan.net (VIGICLIMM) ; AIP ; Gouvernement (2026).')
+  s = content('Analyse', '06 · Pourquoi l\'existant échoue', 'On finance les ouvrages, pas leur entretien ni l\'alerte', 'Sources : BAD (bassin du Gourou, PAACA : 16,15 km de canaux) ; DG Trésor (FASEP, 2022) ; Abidjan.net (VIGICLIMM) ; AIP ; Gouvernement (2026).')
   const exist = [
     [I.build, 'Grands travaux de drainage', 'Capacité hydraulique accrue (Gourou, PAACA)', 'Un ouvrage neuf bouché par les déchets perd sa capacité en une saison. L\'entretien n\'est pas piloté par la donnée.'],
     [I.rain, 'Vigilance météo et capteurs', 'Bonne connaissance des précipitations (SODEXAM, VIGICLIMM, HD Rain)', 'La donnée reste dans les institutions. Aucun message hyperlocal ni actionnable.'],
@@ -316,7 +319,7 @@ async function build() {
   text(s, '« Kanivo » vient de « caniveau », écrit comme on le prononce à Abidjan. L\'ambition : rendre visible l\'infrastructure invisible.', { x: M, y: 5.2, w: 8.5, h: 0.8, fontSize: 16, color: C.background2, italic: true })
 
   /* 10 — Modules */
-  s = content('Solution', '07 · Quatre modules', 'Une seule boucle de données, pensée d\'abord pour les canaux sans smartphone', 'Hypothèses de conception Kanivo. Langues d\'alerte : dioula, baoulé, nouchi et français.')
+  s = content('Solution', '07 · Quatre modules', 'Une boucle de données, conçue d\'abord pour le téléphone simple', 'Hypothèses de conception Kanivo. Langues d\'alerte : dioula, baoulé, nouchi et français.')
   const mods = [
     [I.camera, '01 · Signal', 'Signaler en 20 secondes', 'WhatsApp, USSD *700#, appli web légère. Photo, position GPS et gravité. L\'IA estime l\'obstruction et écarte les doublons.', 'Citoyens, brigades'],
     [I.map, '02 · Carte de risque', 'Un score par îlot de 250 m', 'Pluie prévue × obstruction × pente × population exposée, recalculé chaque heure.', 'ANAGED, communes, ONPC'],
@@ -353,11 +356,11 @@ async function build() {
   })
   card(s, M, 4.85, 12.1, 1.45, { fill: HEX.water, transparency: 90, line: HEX.water })
   text(s, 'SCORE DE RISQUE', { x: M + 0.35, y: 5.05, w: 4, h: 0.3, fontSize: 11, bold: true, color: C.accent1, charSpacing: 2 })
-  text(s, 'risque = pluie prévue × obstruction des caniveaux × pente et topographie × population exposée', { x: M + 0.35, y: 5.4, w: 11.4, h: 0.6, fontFace: 'Courier New', fontSize: 17, color: C.background2 })
+  text(s, 'risque = pluie prévue × obstruction × pente × population exposée', { x: M + 0.35, y: 5.4, w: 11.4, h: 0.6, fontFace: 'Courier New', fontSize: 17, color: C.background2 })
 
   /* 12 — Démo du site */
   s = content('Solution', '09 · Démo', 'Un site et un prototype interactif déjà en ligne', 'Captures réelles du site, recette automatisée Playwright et Lighthouse du 22 octobre 2026.')
-  const shotA = path.join(CAPTURES, 'desktop-sim-avec-kanivo.png')
+  const shotA = path.join(CAPTURES, 'desktop-07-prototype.png')
   const shotB = path.join(CAPTURES, 'desktop-01-hero.png')
   s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: M - 0.04, y: 1.86, w: 7.38, h: 4.62, rectRadius: 0.08, fill: { color: HEX.line }, line: { color: HEX.line, width: 0 }, objectName: 'cadre-demo' })
   s.addImage({ path: shotA, x: M, y: 1.9, w: 7.3, h: 4.5625, objectName: 'capture-prototype' })
@@ -472,7 +475,7 @@ async function build() {
     { text: 'Data scientist (score de risque, vision)', options: { bullet: true, breakLine: true } },
     { text: 'Coordination terrain et 100 Brigades vertes', options: { bullet: true, breakLine: true } },
     { text: 'Référents ANAGED, ONPC et communes', options: { bullet: true } },
-  ], { x: M + 0.3, y: 2.7, w: 4.65, h: 3.4, fontSize: 14, color: C.background2, paraSpaceAfter: 6 })
+  ], { x: M + 0.3, y: 2.75, w: 4.65, h: 3.4, fontSize: 15, color: C.background2, paraSpaceAfter: 14 })
   const nx = [
     ['30 j', 'Valider le cadrage avec l\'ANAGED, l\'ONPC et les mairies d\'Attécoubé et d\'Abobo.'],
     ['60 j', 'Signer l\'accès aux données SODEXAM et le canal SMS avec un opérateur.'],
@@ -505,7 +508,7 @@ async function build() {
   ]
   const half = Math.ceil(src.length / 2)
   ;[src.slice(0, half), src.slice(half)].forEach((col, j) => {
-    text(s, col.map((t, i) => ({ text: t, options: { bullet: true, breakLine: i < col.length - 1 } })), { x: M + j * 6.15, y: 1.95, w: 5.85, h: 4.4, fontSize: 13, color: C.background2, paraSpaceAfter: 8 })
+    text(s, col.map((t, i) => ({ text: t, options: { bullet: true, breakLine: i < col.length - 1 } })), { x: M + j * 6.15, y: 1.95, w: 5.85, h: 4.5, fontSize: 14, color: C.background2, paraSpaceAfter: 12 })
   })
 
   await pres.writeFile({ fileName: OUT })
