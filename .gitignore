@@ -4,3 +4,5 @@ dist/
 *.log
 .lighthouseci/
 .render/
+visite/resultats/
+__pycache__/

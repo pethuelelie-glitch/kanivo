@@ -42,6 +42,29 @@ npm run deck      # régénère le PowerPoint dans livrable/
 
 Le guide détaillé est dans [`livrable/guide-installation.md`](livrable/guide-installation.md).
 
+## Présentation automatique et recette commentée
+
+`visite/guide.py` prend la main sur l'ordinateur. Il ouvre Edge ou Chrome en plein écran, puis déplace **le vrai curseur de Windows** comme le ferait une personne : trajets en courbe, défilement à la molette par à-coups, pauses de lecture. Il présente chaque section à voix haute, avec une voix neuronale française (Denise). À défaut, il utilise la voix du navigateur ou celle de Windows. Le texte s'affiche aussi dans une bulle à l'écran.
+
+Il **teste lui-même** chaque fonction et coche en direct une liste de recette de 20 contrôles :
+- chargement, pluie animée, compteurs, frise épinglée, téléphone synchronisé ;
+- les 4 réglages du simulateur, la carte à la souris et au clavier, le module Signal ;
+- sources, débordement, menu, retour en haut, lien d'évitement, console JavaScript ;
+- la version mobile.
+
+À la fin, il propose **« À vous de jouer »** : 5 missions vérifiées en direct (« Montre-moi » si vous bloquez), puis un quiz de 5 questions. Les bilans (JSON et capture) sont enregistrés dans `visite/resultats/`.
+
+```bash
+pip install -r visite/requirements.txt
+python visite/guide.py                 # site en ligne, plein écran, voix
+python visite/guide.py --local         # serveur de dev (npm run dev)
+python visite/guide.py --a-vous        # directement aux missions et au quiz
+python visite/guide.py --fenetre --souris-virtuelle --vitesse 1.5
+python visite/guide.py --help          # toutes les options (--muet, --voix, --sans-mobile, --auto…)
+```
+
+Pas de son ? Vérifiez le volume et la sortie audio par défaut de Windows. Vous pouvez aussi forcer une autre voix avec `--voix navigateur` ou `--voix windows`. Pour quitter le plein écran, appuyez sur F11. Pour arrêter, fermez le navigateur ou faites Ctrl+C dans le terminal.
+
 ## Structure
 
 ```text
@@ -51,6 +74,7 @@ src/sim.js               modèle de risque illustratif et prototype interactif
 src/data.js              13 communes (population RGPH 2021, indices illustratifs)
 src/style.css            système visuel et responsive
 scripts/qa.mjs           recette automatisée (desktop, mobile, reduced-motion)
+visite/guide.py          visite guidée « humaine » puis missions et quiz (Python, Playwright)
 deck/build-deck.cjs      générateur du PowerPoint (pptxgenjs)
 deck/motion.cjs          transitions et animations réelles injectées dans l'OOXML
 .github/workflows/       déploiement continu sur GitHub Pages
