@@ -105,6 +105,9 @@ function splitWords(el) {
 }
 $$('[data-split]').forEach(splitWords)
 
+/* ---------- Prototype (avant les animations : la carte doit exister) ---------- */
+initSim($('[data-sim]'), { gsap: reduced ? null : gsap })
+
 /* ---------- Animations ---------- */
 const mm = gsap.matchMedia()
 
@@ -122,7 +125,7 @@ mm.add({ motion: '(prefers-reduced-motion: no-preference)', desktop: '(min-width
   gsap.timeline({ defaults: { ease: 'expo.out' } })
     .from(heroWords, { yPercent: 110, rotate: 4, duration: 1.4, stagger: 0.06 }, 0.15)
     .to('.hero [data-reveal]', { opacity: 1, y: 0, duration: 1.2, stagger: 0.12 }, 0.5)
-    .from('.nav', { y: -30, opacity: 0, duration: 1 }, 0.6)
+    .from('.nav', { opacity: 0, duration: 1 }, 0.6)
 
   // Vagues + pluie qui s'intensifie au scroll
   gsap.to('[data-wave="1"]', { attr: { d: 'M0 100 C 240 150 480 70 720 110 S 1200 160 1440 100 V220 H0Z' }, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut' })
@@ -240,8 +243,6 @@ const spy = new IntersectionObserver((entries) => {
 }, { rootMargin: '-45% 0px -50% 0px' })
 links.forEach((a) => { const s = $(a.getAttribute('href')); if (s) spy.observe(s) })
 
-/* ---------- Prototype ---------- */
-initSim($('[data-sim]'), { gsap: reduced ? null : gsap })
 
 // Polices chargées → recalcul des positions
 document.fonts?.ready.then(() => ScrollTrigger.refresh())
