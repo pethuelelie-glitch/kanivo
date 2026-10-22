@@ -8,7 +8,7 @@ const fmt = new Intl.NumberFormat('fr-FR')
 export function riskFor(c, { rain, curage }) {
   const obstruction = c.obs * (1 - curage)
   const effective = rain * (1 + obstruction * 1.3)
-  const hazard = 1 / (1 + Math.exp(-(effective - 150) / 32))
+  const hazard = 1 / (1 + Math.exp(-(effective - 220) / 40))
   return Math.min(1, hazard * (0.35 + c.vuln * 0.75))
 }
 
