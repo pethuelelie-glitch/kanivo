@@ -321,7 +321,7 @@ input[type='range']:active::-webkit-slider-thumb { transform: scale(1.2); }
 /* MASTERCLASS */
 .master { background: radial-gradient(50% 50% at 80% 30%, rgba(255, 138, 31, 0.1), transparent 70%), radial-gradient(40% 50% at 10% 80%, rgba(58, 214, 200, 0.1), transparent 70%); }
 .pipeline { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
-.pipeline li { background: var(--ink); padding: 28px; display: grid; gap: 8px; color: var(--muted); }
+.pipeline li { background: var(--ink); padding: 28px; display: grid; gap: 8px; align-content: start; color: var(--muted); }
 .pipeline span { font: 500 12px var(--mono); color: var(--orange); }
 .pipeline b { font: 400 24px var(--serif); color: var(--text); }
 .master__links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
