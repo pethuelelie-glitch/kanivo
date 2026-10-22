@@ -1,9 +1,11 @@
 // Génère livrable/Kanivo-Inondations-Abidjan.pptx — node deck/build-deck.cjs
-// Deck structuré : thème, layouts (masters pptxgenjs), sections, graphiques natifs.
+// Deck structuré : thème, layouts (masters pptxgenjs), sections, graphiques natifs,
+// transitions Morph et animations d'entrée chorégraphiées (deck/motion.cjs).
 const path = require('path')
 const fs = require('fs')
 const pptxgen = require('pptxgenjs')
 const sharp = require('sharp')
+const { createMotion, applyMotion } = require('./motion.cjs')
 
 const ROOT = path.resolve(__dirname, '..')
 const OUT = path.join(ROOT, 'livrable', 'Kanivo-Inondations-Abidjan.pptx')
@@ -121,8 +123,12 @@ function defineLayouts(bgTitle, bgSection) {
 /* ---------- Helpers ---------- */
 let n = 0
 const id = (p) => `${p}-${++n}`
+const motion = createMotion()
+const beat = (fx, gap, dur) => motion.beat(fx, gap, dur)
+const reg = (name, fx) => { motion.reg(name, fx); return name }
 function content(section, kicker, title, source) {
   const s = pres.addSlide({ masterName: 'KANIVO_CONTENU', sectionTitle: section })
+  motion.slide('morph') // les titres morphent d'une slide à l'autre ; le contenu entre en cascade
   s.addText(kicker.toUpperCase(), { placeholder: 'kicker' })
   s.addText(title, { placeholder: 'title' })
   if (source) s.addText(source, { placeholder: 'source' })
@@ -130,7 +136,7 @@ function content(section, kicker, title, source) {
 }
 function card(s, x, y, w, h, opts = {}) {
   s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
-    x, y, w, h, rectRadius: 0.12, objectName: id('carte'),
+    x, y, w, h, rectRadius: 0.12, objectName: reg(id('carte')),
     fill: { color: opts.fill || C.text2, transparency: opts.transparency || 0 },
     line: { color: opts.line || HEX.line, width: opts.lineWidth || 0.75 },
   })
@@ -139,15 +145,16 @@ function card(s, x, y, w, h, opts = {}) {
 const nb = (t) => t.replace(/(\d) (?=\d{3})/g, '$1 ').replace(/(\d) (?=(%|t|M|M\$|j|mm|km|min)(?![\p{L}]))/gu, '$1 ').replace(/([≥<×→]) /g, '$1 ')
 function text(s, t, o) {
   t = typeof t === 'string' ? nb(t) : t.map((run) => ({ ...run, text: nb(run.text) }))
-  s.addText(t, { isTextBox: true, margin: 0, valign: 'top', color: C.background2, fontSize: 14, objectName: id('texte'), ...o })
+  const { fx, ...rest } = o
+  s.addText(t, { isTextBox: true, margin: 0, valign: 'top', color: C.background2, fontSize: 14, objectName: reg(id('texte'), fx), ...rest })
 }
 function badge(s, x, y, label, color = C.accent1, d = 0.5) {
-  s.addShape(pres.shapes.OVAL, { x, y, w: d, h: d, fill: { color: HEX.ink }, line: { color, width: 1.25 }, objectName: id('pastille') })
+  s.addShape(pres.shapes.OVAL, { x, y, w: d, h: d, fill: { color: HEX.ink }, line: { color, width: 1.25 }, objectName: reg(id('pastille')) })
   text(s, label, { x, y, w: d, h: d, align: 'center', valign: 'middle', fontSize: 13, bold: true, color })
 }
 function iconCircle(s, data, x, y, d = 0.62) {
-  s.addShape(pres.shapes.OVAL, { x, y, w: d, h: d, fill: { color: HEX.water, transparency: 85 }, line: { color: HEX.water, width: 0.75, transparency: 40 }, objectName: id('cercle-icone') })
-  s.addImage({ data, x: x + d * 0.22, y: y + d * 0.22, w: d * 0.56, h: d * 0.56, objectName: id('icone') })
+  s.addShape(pres.shapes.OVAL, { x, y, w: d, h: d, fill: { color: HEX.water, transparency: 85 }, line: { color: HEX.water, width: 0.75, transparency: 40 }, objectName: reg(id('cercle-icone')) })
+  s.addImage({ data, x: x + d * 0.22, y: y + d * 0.22, w: d * 0.56, h: d * 0.56, objectName: reg(id('icone')) })
 }
 const axis = {
   catAxisLabelColor: HEX.muted, valAxisLabelColor: HEX.muted, catAxisLabelFontSize: 12, valAxisLabelFontSize: 11,
@@ -174,9 +181,14 @@ async function build() {
   /* 1 — Titre */
   pres.addSection({ title: 'Ouverture' })
   let s = pres.addSlide({ masterName: 'KANIVO_TITRE', sectionTitle: 'Ouverture' })
-  s.addText('NOTE STRATÉGIQUE · OCTOBRE 2026', { placeholder: 'kicker' })
-  s.addText([{ text: 'À Abidjan, la pluie ' }, { text: 'ne tue pas', options: { italic: true, color: C.accent1 } }, { text: ' seule' }], { placeholder: 'title' })
-  s.addText('Kanivo : signaler les caniveaux bouchés, prioriser le curage, prévenir les quartiers exposés. Une réponse numérique aux inondations meurtrières du District d\'Abidjan.', { placeholder: 'subtitle' })
+  motion.slide('fade')
+  beat('fade', 0, 900)
+  s.addText('NOTE STRATÉGIQUE · OCTOBRE 2026', { placeholder: 'kicker' }); reg('ph-1')
+  beat('float', 250, 1100)
+  s.addText([{ text: 'À Abidjan, la pluie ' }, { text: 'ne tue pas', options: { italic: true, color: C.accent1 } }, { text: ' seule' }], { placeholder: 'title' }); reg('ph-2')
+  beat('fade', 500, 900)
+  s.addText('Kanivo : signaler les caniveaux bouchés, prioriser le curage, prévenir les quartiers exposés. Une réponse numérique aux inondations meurtrières du District d\'Abidjan.', { placeholder: 'subtitle' }); reg('ph-3')
+  beat('float', 450)
   card(s, 9.7, 5.55, 3.05, 1.2, { fill: HEX.ink, transparency: 20, line: HEX.orange })
   text(s, '59 morts', { x: 9.95, y: 5.68, w: 2.6, h: 0.5, fontFace: THEME.headFontFace, fontSize: 28, color: C.accent2 })
   text(s, 'après les pluies du 28-29 juin 2026 (Gouvernement)', { x: 9.95, y: 6.2, w: 2.65, h: 0.5, fontSize: 11, color: C.background2 })
@@ -191,11 +203,13 @@ async function build() {
   ]
   syn.forEach(([k, t, d, col], i) => {
     const x = M + i * 4.1
+    beat('float', 220)
     card(s, x, 1.95, 3.85, 3.35)
     badge(s, x + 0.35, 2.25, k, col)
     text(s, t, { x: x + 0.35, y: 2.95, w: 3.2, h: 0.5, fontFace: THEME.headFontFace, fontSize: 22 })
     text(s, d, { x: x + 0.35, y: 3.5, w: 3.2, h: 1.7, fontSize: 14, color: C.accent6 })
   })
+  beat('wipe-right', 350)
   card(s, M, 5.5, 12.1, 0.9, { fill: HEX.orange, transparency: 88, line: HEX.orange })
   text(s, [{ text: 'Décision attendue : ', options: { bold: true, color: C.accent2 } }, { text: 'lancer un pilote de 6 mois à Attécoubé et Abobo, opérationnel avant le 15 mai 2027.' }], { x: M + 0.35, y: 5.5, w: 11.4, h: 0.9, valign: 'middle', fontSize: 16 })
   s.addNotes('Structure pyramidale : problème, diagnostic, proposition, puis la décision demandée.')
@@ -211,21 +225,25 @@ async function build() {
   ]
   stats.forEach(([v, l, col], i) => {
     const x = M + i * 3.07
+    beat('float', 200)
     card(s, x, 2.0, 2.87, 2.75)
     text(s, v, { x: x + 0.3, y: 2.3, w: 2.4, h: 1.0, fontFace: THEME.headFontFace, fontSize: 44, color: col })
     text(s, l, { x: x + 0.3, y: 3.45, w: 2.35, h: 1.1, fontSize: 14, color: C.accent6 })
   })
+  beat('fade', 350)
   iconCircle(s, I.drops, M, 5.2)
   text(s, [{ text: 'Lecture : ', options: { bold: true } }, { text: 'les moyens existent (pluviomètres, grands travaux, 49,7 M d\'abonnements mobiles). Ce qui manque, c\'est la coordination de terrain avant et pendant la pluie.' }], { x: M + 0.85, y: 5.2, w: 11.2, h: 0.65, valign: 'middle', fontSize: 15 })
 
   /* 4 — Chronologie (graphique) */
   s = content('Problème et données', '02 · Trente ans de répétition', '2026 est l\'épisode le plus meurtrier jamais recensé', 'Sources : presse nationale et internationale ; ONPC (juin 2024) ; Gouvernement (juil. 2026). Bilans provisoires pour 2025.')
+  beat('wipe-up', 0, 1200)
   s.addChart(pres.charts.BAR, [{ name: 'Morts', labels: ['1996', '2018', '2024', '2025*', '2026'], values: [28, 18, 24, 6, 59] }], {
     x: M, y: 1.85, w: 7.6, h: 4.55, barDir: 'col', barGapWidthPct: 55,
     chartColors: [HEX.muted, HEX.muted, HEX.muted, HEX.muted, HEX.orange],
     showValue: true, dataLabelPosition: 'outEnd', valAxisHidden: true, valGridLine: { style: 'none' },
-    showTitle: true, title: 'Morts par épisode majeur de pluies à Abidjan', showLegend: false, ...axis,
+    showTitle: true, title: 'Morts par épisode majeur de pluies à Abidjan', showLegend: false, ...axis, objectName: reg('graphique-morts'),
   })
+  beat('float', 300)
   card(s, 8.6, 1.95, 4.1, 4.35)
   const chronoPts = [
     ['Récurrence', 'Un épisode meurtrier presque chaque saison, de mai à juillet.'],
@@ -233,20 +251,24 @@ async function build() {
     ['Localisation', 'Attécoubé concentre une vingtaine de victimes en 2026, sur des sites évacués puis réoccupés.'],
   ]
   chronoPts.forEach(([t, d], i) => {
+    beat('fade', 250)
     text(s, t, { x: 8.9, y: 2.2 + i * 1.32, w: 3.5, h: 0.35, bold: true, fontSize: 15, color: C.accent1 })
     text(s, d, { x: 8.9, y: 2.55 + i * 1.32, w: 3.55, h: 0.85, fontSize: 14, color: C.background2 })
   })
 
   /* 5 — Exposition */
   s = content('Problème et données', '03 · Exposition', 'Écoles, hôpitaux et routes sont en première ligne', 'Sources : GFDRR City Scan Abidjan ; Banque mondiale / GFDRR, PDNA 2018 ; UNDRR, profil de risque (perte modélisée).')
+  beat('wipe-right', 0, 1100)
   s.addChart(pres.charts.BAR, [{ name: 'Part en zone à risque', labels: ['Hôpitaux', 'Routes principales', 'Écoles', 'Surface du district'], values: [18, 22, 23, 26] }], {
     x: M, y: 1.85, w: 7.4, h: 4.5, barDir: 'bar', barGapWidthPct: 45, chartColors: [HEX.water],
     showValue: true, dataLabelPosition: 'outEnd', dataLabelFormatCode: '0"%"', valAxisHidden: true, valAxisMaxVal: 35, valGridLine: { style: 'none' },
-    showTitle: true, title: 'Part exposée aux inondations et glissements de terrain (%)', showLegend: false, ...axis,
+    showTitle: true, title: 'Part exposée aux inondations et glissements de terrain (%)', showLegend: false, ...axis, objectName: reg('graphique-exposition'),
   })
+  beat('float', 400)
   card(s, 8.4, 1.95, 4.3, 2.05, { line: HEX.orange })
   text(s, '≈ 443 M$', { x: 8.7, y: 2.15, w: 3.8, h: 0.75, fontFace: THEME.headFontFace, fontSize: 36, color: C.accent2 })
   text(s, 'de perte probable pour une crue centennale à l\'échelle nationale (modèle UNDRR)', { x: 8.7, y: 2.95, w: 3.75, h: 0.9, fontSize: 14, color: C.accent6 })
+  beat('float', 250)
   card(s, 8.4, 4.25, 4.3, 2.05)
   text(s, '1 140', { x: 8.7, y: 4.45, w: 3.8, h: 0.75, fontFace: THEME.headFontFace, fontSize: 36, color: C.background2 })
   text(s, 'bâtiments résidentiels endommagés lors de l\'épisode de juin 2018', { x: 8.7, y: 5.25, w: 3.75, h: 0.9, fontSize: 14, color: C.accent6 })
@@ -262,11 +284,13 @@ async function build() {
   ]
   causes.forEach(([k, t, d], i) => {
     const x = M + (i % 2) * 4.3, y = 1.95 + Math.floor(i / 2) * 2.3
+    beat('float', 220)
     card(s, x, y, 4.1, 2.1)
     badge(s, x + 0.3, y + 0.3, k)
     text(s, t, { x: x + 1.0, y: y + 0.32, w: 2.9, h: 0.5, fontFace: THEME.headFontFace, fontSize: 18 })
     text(s, d, { x: x + 0.3, y: y + 0.95, w: 3.55, h: 1.1, fontSize: 14, color: C.accent6 })
   })
+  beat('float', 350)
   card(s, 9.3, 1.95, 3.4, 4.4, { fill: HEX.water, transparency: 90, line: HEX.water })
   iconCircle(s, I.scan, 9.6, 2.25)
   text(s, 'Le fil commun', { x: 9.6, y: 3.05, w: 2.9, h: 0.45, fontFace: THEME.headFontFace, fontSize: 20, color: C.accent1 })
@@ -285,9 +309,10 @@ async function build() {
     ['Opérateurs télécoms', 'SMS, cell broadcast, mobile money', 'Des contenus d\'alerte prêts à diffuser'],
     ['Habitants', 'Premiers témoins, premiers secours', 'Un moyen simple de signaler et d\'être entendus'],
   ]
+  beat('wipe-down', 0, 1200)
   s.addTable([[hdr('Acteur'), hdr('Rôle'), hdr('Ce qui lui manque')], ...rows.map((r) => r.map((c, j) => ({ text: c, options: { color: j === 2 ? HEX.amber : j === 0 ? HEX.text : HEX.muted, bold: j === 0 } })))], {
     x: M, y: 1.9, w: 12.1, colW: [3.0, 4.75, 4.35], fontSize: 13, fontFace: 'Calibri', color: HEX.text,
-    border: { type: 'solid', pt: 0.5, color: HEX.line }, fill: { color: HEX.ink }, rowH: 0.5, valign: 'middle', margin: [0.04, 0.12, 0.04, 0.12], objectName: 'tableau-acteurs',
+    border: { type: 'solid', pt: 0.5, color: HEX.line }, fill: { color: HEX.ink }, rowH: 0.5, valign: 'middle', margin: [0.04, 0.12, 0.04, 0.12], objectName: reg('tableau-acteurs'),
   })
 
   /* 8 — Existant */
@@ -298,11 +323,13 @@ async function build() {
     [I.radio, 'Alertes WhatsApp et relais', 'Rapides et gratuites', 'Hétérogènes et non traçables : on ne sait ni qui a reçu, ni qui a agi.'],
     [I.siren, 'Déguerpissements', 'Retirent des personnes du danger', 'Sans suivi ni accompagnement, les sites sont réoccupés.'],
   ]
+  beat('fade')
   text(s, 'DISPOSITIF', { x: M + 0.85, y: 1.8, w: 3.5, h: 0.3, fontSize: 11, bold: true, color: C.accent6, charSpacing: 2 })
   text(s, 'CE QU\'IL APPORTE', { x: 4.95, y: 1.8, w: 3.4, h: 0.3, fontSize: 11, bold: true, color: C.accent6, charSpacing: 2 })
   text(s, 'POURQUOI ÇA NE SUFFIT PAS', { x: 8.6, y: 1.8, w: 4.0, h: 0.3, fontSize: 11, bold: true, color: C.accent2, charSpacing: 2 })
   exist.forEach(([ic, t, a, l], i) => {
     const y = 2.2 + i * 1.08
+    beat('wipe-right', 220)
     card(s, M, y, 12.1, 0.95)
     iconCircle(s, ic, M + 0.18, y + 0.17)
     text(s, t, { x: M + 0.95, y, w: 3.3, h: 0.95, valign: 'middle', fontFace: THEME.headFontFace, fontSize: 16 })
@@ -313,9 +340,14 @@ async function build() {
   /* 9 — Section Solution */
   pres.addSection({ title: 'Solution' })
   s = pres.addSlide({ masterName: 'KANIVO_SECTION', sectionTitle: 'Solution' })
-  s.addText('LA SOLUTION', { placeholder: 'kicker' })
-  s.addText('Kanivo', { placeholder: 'title' })
-  s.addText('Voir · Prioriser · Prévenir', { placeholder: 'subtitle' })
+  motion.slide('push')
+  beat('fade', 0, 700)
+  s.addText('LA SOLUTION', { placeholder: 'kicker' }); reg('ph-1')
+  beat('zoom', 250, 900)
+  s.addText('Kanivo', { placeholder: 'title' }); reg('ph-2')
+  beat('wipe-right', 450, 1000)
+  s.addText('Voir · Prioriser · Prévenir', { placeholder: 'subtitle' }); reg('ph-3')
+  beat('fade', 600, 900)
   text(s, '« Kanivo » vient de « caniveau », écrit comme on le prononce à Abidjan. L\'ambition : rendre visible l\'infrastructure invisible.', { x: M, y: 5.2, w: 8.5, h: 0.8, fontSize: 16, color: C.background2, italic: true })
 
   /* 10 — Modules */
@@ -328,6 +360,7 @@ async function build() {
   ]
   mods.forEach(([ic, k, t, d, who], i) => {
     const x = M + i * 3.07
+    beat('float', 220)
     card(s, x, 1.95, 2.87, 4.45)
     iconCircle(s, ic, x + 0.28, 2.22, 0.7)
     text(s, k.toUpperCase(), { x: x + 0.28, y: 3.08, w: 2.4, h: 0.3, fontSize: 11, bold: true, color: C.accent2, charSpacing: 1 })
@@ -348,12 +381,14 @@ async function build() {
   const fw = 2.22, gap = 0.25
   flow.forEach(([ic, t, d], i) => {
     const x = M + i * (fw + gap)
+    beat('float', 280)
     card(s, x, 2.05, fw, 2.5)
     iconCircle(s, ic, x + (fw - 0.7) / 2, 2.3, 0.7)
     text(s, t, { x: x + 0.15, y: 3.15, w: fw - 0.3, h: 0.4, align: 'center', fontFace: THEME.headFontFace, fontSize: 17 })
     text(s, d, { x: x + 0.2, y: 3.6, w: fw - 0.4, h: 0.85, align: 'center', fontSize: 13, color: C.accent6 })
-    if (i < flow.length - 1) s.addShape(pres.shapes.RIGHT_ARROW, { x: x + fw + 0.02, y: 3.17, w: 0.21, h: 0.26, fill: { color: HEX.water }, line: { color: HEX.water, width: 0 }, objectName: id('fleche') })
+    if (i < flow.length - 1) s.addShape(pres.shapes.RIGHT_ARROW, { x: x + fw + 0.02, y: 3.17, w: 0.21, h: 0.26, fill: { color: HEX.water }, line: { color: HEX.water, width: 0 }, objectName: reg(id('fleche'), 'wipe-right') })
   })
+  beat('wipe-right', 350, 1000)
   card(s, M, 4.85, 12.1, 1.45, { fill: HEX.water, transparency: 90, line: HEX.water })
   text(s, 'SCORE DE RISQUE', { x: M + 0.35, y: 5.05, w: 4, h: 0.3, fontSize: 11, bold: true, color: C.accent1, charSpacing: 2 })
   text(s, 'risque = pluie prévue × obstruction × pente × population exposée', { x: M + 0.35, y: 5.4, w: 11.4, h: 0.6, fontFace: 'Courier New', fontSize: 17, color: C.background2 })
@@ -362,10 +397,14 @@ async function build() {
   s = content('Solution', '09 · Démo', 'Un site et un prototype interactif déjà en ligne', 'Captures réelles du site, recette automatisée Playwright et Lighthouse du 22 octobre 2026.')
   const shotA = path.join(CAPTURES, 'desktop-07-prototype.png')
   const shotB = path.join(CAPTURES, 'desktop-01-hero.png')
-  s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: M - 0.04, y: 1.86, w: 7.38, h: 4.62, rectRadius: 0.08, fill: { color: HEX.line }, line: { color: HEX.line, width: 0 }, objectName: 'cadre-demo' })
-  s.addImage({ path: shotA, x: M, y: 1.9, w: 7.3, h: 4.5625, objectName: 'capture-prototype' })
-  s.addImage({ path: shotB, x: 8.25, y: 1.9, w: 4.45, h: 2.78, objectName: 'capture-hero' })
+  beat('zoom', 0, 900)
+  s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: M - 0.04, y: 1.86, w: 7.38, h: 4.62, rectRadius: 0.08, fill: { color: HEX.line }, line: { color: HEX.line, width: 0 }, objectName: reg('cadre-demo') })
+  s.addImage({ path: shotA, x: M, y: 1.9, w: 7.3, h: 4.5625, objectName: reg('capture-prototype') })
+  beat('float', 400)
+  s.addImage({ path: shotB, x: 8.25, y: 1.9, w: 4.45, h: 2.78, objectName: reg('capture-hero') })
+  beat('fade', 300)
   text(s, [{ text: 'pethuelelie-glitch.github.io/kanivo', options: { hyperlink: { url: 'https://pethuelelie-glitch.github.io/kanivo/' }, color: C.accent1, bold: true } }], { x: 8.25, y: 4.85, w: 4.45, h: 0.35, fontSize: 15 })
+  beat('fade', 200)
   text(s, [
     { text: 'Simulateur de pluie sur les 13 communes', options: { bullet: true, breakLine: true } },
     { text: 'Comparaison sans et avec Kanivo', options: { bullet: true, breakLine: true } },
@@ -374,6 +413,7 @@ async function build() {
 
   /* 13 — Simulation */
   s = content('Solution', '10 · Ce que montre le simulateur', 'Lors d\'un épisode extrême, l\'alerte change l\'ordre de grandeur', 'Modèle illustratif et non calibré du prototype : 210 mm en 24 h, curage 15 % → 80 %, couverture d\'alerte 20 % → 75 %. À calibrer pendant le pilote.')
+  beat('wipe-up', 0, 1200)
   s.addChart(pres.charts.BAR, [
     { name: 'Sans Kanivo', labels: ['Habitants exposés', 'Mis à l\'abri à temps'], values: [407474, 69271] },
     { name: 'Avec Kanivo', labels: ['Habitants exposés', 'Mis à l\'abri à temps'], values: [277614, 176978] },
@@ -381,11 +421,12 @@ async function build() {
     x: M, y: 1.85, w: 7.6, h: 4.55, barDir: 'col', barGapWidthPct: 70, barOverlapPct: -10,
     chartColors: [HEX.orange, HEX.water], showValue: true, dataLabelPosition: 'outEnd', dataLabelFormatCode: '# ##0',
     valAxisHidden: true, valGridLine: { style: 'none' }, showLegend: true, legendPos: 't', legendColor: HEX.text, legendFontSize: 12,
-    showTitle: false, ...axis, dataLabelFontSize: 12,
+    showTitle: false, ...axis, dataLabelFontSize: 12, objectName: reg('graphique-simulation'),
   })
   const simK = [['11 → 2', 'communes en alerte rouge', C.accent2], ['× 2,6', 'personnes mises à l\'abri à temps', C.accent1], ['− 32 %', 'd\'habitants exposés grâce au curage préventif', C.background2]]
   simK.forEach(([v, l, col], i) => {
     const y = 1.95 + i * 1.47
+    beat('float', i ? 220 : 450)
     card(s, 8.6, y, 4.1, 1.3)
     text(s, v, { x: 8.9, y: y + 0.18, w: 1.9, h: 0.9, valign: 'middle', fontFace: THEME.headFontFace, fontSize: 30, color: col })
     text(s, l, { x: 10.8, y: y + 0.18, w: 1.75, h: 0.9, valign: 'middle', fontSize: 14, color: C.accent6 })
@@ -402,6 +443,7 @@ async function build() {
   ]
   biz.forEach(([ic, t, d, tag], i) => {
     const x = M + (i % 2) * 6.15, y = 1.95 + Math.floor(i / 2) * 2.25
+    beat('float', 220)
     card(s, x, y, 5.95, 2.05)
     iconCircle(s, ic, x + 0.3, y + 0.3, 0.7)
     text(s, t, { x: x + 1.2, y: y + 0.3, w: 4.5, h: 0.45, fontFace: THEME.headFontFace, fontSize: 20 })
@@ -419,10 +461,13 @@ async function build() {
     ['2028', 'Passage à l\'échelle', '13 communes, API assureurs, villes secondaires', 'Baisse mesurée des victimes'],
   ]
   const sw = 2.3, sg = 0.15
-  s.addShape(pres.shapes.LINE, { x: M + 0.2, y: 2.3, w: 11.7, h: 0, line: { color: HEX.water, width: 1.5 }, objectName: 'ligne-temps' })
+  beat('wipe-right', 0, 1400)
+  s.addShape(pres.shapes.LINE, { x: M + 0.2, y: 2.3, w: 11.7, h: 0, line: { color: HEX.water, width: 1.5 }, objectName: reg('ligne-temps') })
   steps.forEach(([d, t, desc, kpi], i) => {
     const x = M + i * (sw + sg)
-    s.addShape(pres.shapes.OVAL, { x: x + 0.1, y: 2.17, w: 0.26, h: 0.26, fill: { color: i === 3 ? HEX.orange : HEX.ink }, line: { color: i === 3 ? HEX.orange : HEX.water, width: 1.5 }, objectName: id('jalon') })
+    beat('zoom', i ? 220 : 300, 500)
+    s.addShape(pres.shapes.OVAL, { x: x + 0.1, y: 2.17, w: 0.26, h: 0.26, fill: { color: i === 3 ? HEX.orange : HEX.ink }, line: { color: i === 3 ? HEX.orange : HEX.water, width: 1.5 }, objectName: reg(id('jalon')) })
+    beat('float', 80)
     text(s, d.toUpperCase(), { x, y: 2.65, w: sw, h: 0.3, fontSize: 11, bold: true, color: C.accent1 })
     card(s, x, 3.05, sw, 3.3)
     text(s, t, { x: x + 0.22, y: 3.25, w: sw - 0.4, h: 0.75, fontFace: THEME.headFontFace, fontSize: 18 })
@@ -440,6 +485,7 @@ async function build() {
   ]
   imp.forEach(([ic, t, d, kpi], i) => {
     const x = M + (i % 2) * 6.15, y = 1.95 + Math.floor(i / 2) * 2.25
+    beat('float', 220)
     card(s, x, y, 5.95, 2.05)
     iconCircle(s, ic, x + 0.3, y + 0.3, 0.7)
     text(s, t, { x: x + 1.2, y: y + 0.3, w: 4.5, h: 0.45, fontFace: THEME.headFontFace, fontSize: 20 })
@@ -458,14 +504,16 @@ async function build() {
     ['Données personnelles', 'Moyenne', 'Minimisation, anonymisation des signaleurs, analyse d\'impact'],
     ['Lassitude face aux fausses alertes', 'Moyenne', 'Seuils calibrés, niveaux gradués, retour d\'expérience après chaque épisode'],
   ]
+  beat('wipe-down', 0, 1200)
   s.addTable([[hdr('Risque'), { ...hdr('Probabilité'), options: { ...hdr('').options, align: 'center' } }, hdr('Parade')], ...rk.map(([a, b, c]) => [{ text: a, options: { bold: true, color: HEX.text } }, prob(b), { text: c, options: { color: HEX.muted } }])], {
     x: M, y: 1.9, w: 12.1, colW: [3.9, 1.6, 6.6], fontSize: 14, fontFace: 'Calibri', color: HEX.text,
-    border: { type: 'solid', pt: 0.5, color: HEX.line }, fill: { color: HEX.ink }, rowH: 0.62, valign: 'middle', margin: [0.05, 0.14, 0.05, 0.14], objectName: 'tableau-risques',
+    border: { type: 'solid', pt: 0.5, color: HEX.line }, fill: { color: HEX.ink }, rowH: 0.62, valign: 'middle', margin: [0.05, 0.14, 0.05, 0.14], objectName: reg('tableau-risques'),
   })
 
   /* 18 — Équipe et prochaines étapes */
   pres.addSection({ title: 'Conclusion' })
   s = content('Conclusion', '15 · Équipe et prochaines étapes', 'Une équipe resserrée et trois décisions pour lancer le pilote', 'Équipe cible pour le pilote de 6 mois ; profils à recruter ou à mettre à disposition par les partenaires.')
+  beat('float')
   card(s, M, 1.95, 5.2, 4.4)
   text(s, 'Équipe cible du pilote', { x: M + 0.3, y: 2.15, w: 4.6, h: 0.45, fontFace: THEME.headFontFace, fontSize: 20, color: C.accent1 })
   text(s, [
@@ -483,10 +531,12 @@ async function build() {
   ]
   nx.forEach(([k, d], i) => {
     const y = 1.95 + i * 1.15
+    beat('float', 250)
     card(s, 6.05, y, 6.65, 1.0)
     badge(s, 6.3, y + 0.2, k, i === 2 ? C.accent2 : C.accent1, 0.6)
     text(s, d, { x: 7.15, y, w: 5.35, h: 1.0, valign: 'middle', fontSize: 15 })
   })
+  beat('wipe-right', 350)
   card(s, 6.05, 5.45, 6.65, 0.9, { fill: HEX.orange, transparency: 88, line: HEX.orange })
   text(s, [{ text: 'Décisions demandées : ', options: { bold: true, color: C.accent2 } }, { text: 'mandat de pilote, communes pilotes, budget de lancement.' }], { x: 6.35, y: 5.45, w: 6.2, h: 0.9, valign: 'middle', fontSize: 15 })
 
@@ -508,12 +558,14 @@ async function build() {
   ]
   const half = Math.ceil(src.length / 2)
   ;[src.slice(0, half), src.slice(half)].forEach((col, j) => {
+    beat('fade', 300, 800)
     text(s, col.map((t, i) => ({ text: t, options: { bullet: true, breakLine: i < col.length - 1 } })), { x: M + j * 6.15, y: 1.95, w: 5.85, h: 4.5, fontSize: 14, color: C.background2, paraSpaceAfter: 12 })
   })
 
   await pres.writeFile({ fileName: OUT })
   await applyTheme(OUT, THEME)
-  console.log('OK', OUT)
+  const st = await applyMotion(OUT, motion.plan)
+  console.log('OK', OUT, `${st.slides} slides animées, ${st.effects} effets`)
 }
 
 build().catch((e) => { console.error(e); process.exit(1) })
