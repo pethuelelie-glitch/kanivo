@@ -15,7 +15,7 @@
 
 | Élément | Fichier |
 |---|---|
-| **Deck PowerPoint** (19 slides, niveau conseil) | [`Kanivo-Inondations-Abidjan.pptx`](Kanivo-Inondations-Abidjan.pptx) |
+| **Deck PowerPoint** (19 slides, niveau conseil, transitions Morph et 284 animations) | [`Kanivo-Inondations-Abidjan.pptx`](Kanivo-Inondations-Abidjan.pptx) |
 | Deck exporté en PDF | [`Kanivo-Inondations-Abidjan.pdf`](Kanivo-Inondations-Abidjan.pdf) |
 | Aperçu des slides (PNG) | [`deck-apercu/`](deck-apercu/) |
 | **Rapport d'analyse** (chiffres, causes, acteurs, solution, 18 sources) | [`rapport-analyse.md`](rapport-analyse.md) |
@@ -43,3 +43,4 @@
 | Erreurs console (local et en ligne, 3 profils) | 0 |
 | Débordement horizontal (390 à 1440 px) | aucun |
 | Deck : validation OOXML et relecture visuelle | ✅ |
+| Deck : transitions et animations relues par LibreOffice (19/19 slides) | ✅ |

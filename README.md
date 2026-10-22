@@ -1,7 +1,7 @@
 # Kanivo — À Abidjan, la pluie ne tue pas seule
 
 **Site en ligne :** <https://pethuelelie-glitch.github.io/kanivo/>
-**Deck :** [`livrable/Kanivo-Inondations-Abidjan.pptx`](livrable/Kanivo-Inondations-Abidjan.pptx)
+**Deck :** [`livrable/Kanivo-Inondations-Abidjan.pptx`](livrable/Kanivo-Inondations-Abidjan.pptx) (transitions Morph et animations d'entrée)
 **Rapport d'analyse sourcé :** [`livrable/rapport-analyse.md`](livrable/rapport-analyse.md)
 
 Dans la nuit du 28 au 29 juin 2026, des pluies diluviennes ont fait **59 morts** à Abidjan (bilan du Gouvernement, 1er juillet 2026). Le même scénario revient chaque saison : 18 morts en 2018, 24 en 2024. Et il s'aggrave. Les causes sont connues : caniveaux bouchés par les déchets (environ 5 000 t produites chaque jour), urbanisation des bas-fonds, sites évacués puis réoccupés, et des alertes qui n'atteignent pas les quartiers.
@@ -52,6 +52,7 @@ src/data.js              13 communes (population RGPH 2021, indices illustratifs
 src/style.css            système visuel et responsive
 scripts/qa.mjs           recette automatisée (desktop, mobile, reduced-motion)
 deck/build-deck.cjs      générateur du PowerPoint (pptxgenjs)
+deck/motion.cjs          transitions et animations réelles injectées dans l'OOXML
 .github/workflows/       déploiement continu sur GitHub Pages
 livrable/                deck, rapport, guide, résultats de tests, captures
 ```

@@ -76,6 +76,9 @@ Rapports HTML complets : [`tests/lighthouse-desktop.report.html`](tests/lighthou
 | Rendu LibreOffice 26.8 → PDF → PNG, relecture des 19 slides | ✅ après correctifs (voir ci-dessous) |
 | Thème appliqué (palette « Kanivo Nuit », Cambria et Calibri) | ✅ vérifié dans `ppt/theme/theme1.xml` |
 | Graphiques | ✅ natifs et modifiables dans PowerPoint (3 graphiques) |
+| Transitions | ✅ Morph sur les slides de contenu (repli Fondu pour les anciennes versions), Fondu sur l'ouverture, Push sur l'intercalaire |
+| Animations | ✅ 284 animations d'entrée (Float In, Fondu, Zoom, Balayage) qui démarrent seules à l'arrivée sur chaque slide, construite en 1,2 à 2,6 s |
+| Relecture des animations | ✅ conversion LibreOffice en ODP : 19/19 transitions et toutes les animations reconnues (ascend, fade-in, wipe, zoom) |
 
 Défauts trouvés au premier rendu, puis corrigés :
 
@@ -87,5 +90,18 @@ Défauts trouvés au premier rendu, puis corrigés :
 6. Graphique d'exposition en ordre inversé (slide 5) : catégories réordonnées.
 7. Capture de démo cadrée sur le titre au lieu de la carte (slide 12) : remplacée par la capture du prototype.
 8. Annexe des sources trop dense pour l'espace disponible (slide 19) : corps de texte agrandi.
+
+### Mise en mouvement
+
+| Slide | Transition | Chorégraphie |
+|---|---|---|
+| 1 · Titre | Fondu | surtitre, titre en Float In, sous-titre, encart « 59 morts » |
+| 2 à 8 · Synthèse et analyse | Morph | cartes en cascade, graphiques révélés par balayage, tableau déroulé du haut |
+| 9 · Intercalaire « Kanivo » | Push vers le haut | nom en Zoom, devise balayée |
+| 10 à 13 · Solution | Morph | modules en cascade, flux étape par étape avec ses flèches, capture de démo en Zoom |
+| 15 · Feuille de route | Morph | ligne de temps balayée, jalons en Zoom puis cartes |
+| 14, 16 à 19 · Déploiement et conclusion | Morph | cartes en cascade, décision finale balayée |
+
+Le moteur se trouve dans [`deck/motion.cjs`](../deck/motion.cjs) : il chorégraphie les entrées pendant la construction, puis injecte `<p:transition>` et `<p:timing>` dans l'OOXML.
 
 Aperçus : [`deck-apercu/`](deck-apercu/). Export PDF : [`Kanivo-Inondations-Abidjan.pdf`](Kanivo-Inondations-Abidjan.pdf).

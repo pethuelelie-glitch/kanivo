@@ -66,7 +66,7 @@ npx lighthouse http://localhost:4173/ --view   # profil mobile
 npm run deck
 ```
 
-Le script `deck/build-deck.cjs` écrit `livrable/Kanivo-Inondations-Abidjan.pptx`. Il réutilise les captures de `livrable/captures/` : lancez `npm run qa` d'abord si vous voulez des captures à jour.
+Le script `deck/build-deck.cjs` écrit `livrable/Kanivo-Inondations-Abidjan.pptx`. Le module `deck/motion.cjs` y ajoute ensuite les transitions (Morph, avec repli Fondu) et les animations d'entrée de chaque slide. Pour voir le mouvement, lancez le diaporama dans PowerPoint 2019 ou 365 (Morph), ou dans LibreOffice Impress (Fondu). Il réutilise les captures de `livrable/captures/` : lancez `npm run qa` d'abord si vous voulez des captures à jour.
 
 ## 6. Déploiement
 
