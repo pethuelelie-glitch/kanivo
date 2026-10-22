@@ -1,3 +1,7 @@
+import '@fontsource-variable/fraunces/opsz.css'
+import '@fontsource-variable/fraunces/opsz-italic.css'
+import '@fontsource-variable/inter/index.css'
+import '@fontsource/jetbrains-mono/latin-500.css'
 import './style.css'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -35,7 +39,7 @@ $$('a[href^="#"]').forEach((a) => {
 /* ---------- Pluie (canvas) ---------- */
 function rain(canvas) {
   const ctx = canvas.getContext('2d')
-  let w, h, drops, splashes, raf, visible = true, intensity = 1
+  let w, h, drops, splashes, raf, visible = true, started = false, intensity = 1
   const dpr = Math.min(window.devicePixelRatio || 1, 2)
   function resize() {
     w = canvas.clientWidth; h = canvas.clientHeight
@@ -71,13 +75,16 @@ function rain(canvas) {
     raf = visible ? requestAnimationFrame(frame) : null
   }
   resize()
-  window.addEventListener('resize', resize, { passive: true })
+  let lastW = w
+  window.addEventListener('resize', () => { if (canvas.clientWidth !== lastW) { lastW = canvas.clientWidth; resize() } }, { passive: true })
   new IntersectionObserver(([e]) => {
     visible = e.isIntersecting
-    if (visible && !raf) raf = requestAnimationFrame(frame)
+    if (visible && started && !raf) raf = requestAnimationFrame(frame)
   }).observe(canvas)
   if (reduced) { intensity = 0; frame(); visible = false; return { set() {} } }
-  raf = requestAnimationFrame(frame)
+  // Démarrage après le premier rendu pour ne pas bloquer le fil principal au chargement
+  const start = () => { started = true; if (visible && !raf) raf = requestAnimationFrame(frame) }
+  'requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 1200 }) : setTimeout(start, 300)
   return { set: (v) => { intensity = v } }
 }
 const rainFx = rain($('[data-rain]'))
@@ -108,6 +115,10 @@ $$('[data-split]').forEach(splitWords)
 /* ---------- Prototype (avant les animations : la carte doit exister) ---------- */
 initSim($('[data-sim]'), { gsap: reduced ? null : gsap })
 
+/* ---------- Polices prêtes (plafonné à 1,5 s) ---------- */
+const fontsReady = Promise.race([document.fonts?.ready ?? Promise.resolve(), new Promise((r) => setTimeout(r, 1500))])
+fontsReady.then(() => $('.hero__inner').classList.add('is-ready'))
+
 /* ---------- Animations ---------- */
 const mm = gsap.matchMedia()
 
@@ -120,12 +131,13 @@ mm.add({ motion: '(prefers-reduced-motion: no-preference)', desktop: '(min-width
     return
   }
 
-  // Intro héro
+  // Intro héro : lancée une fois les polices prêtes (évite tout décalage de mise en page)
   const heroWords = $$('.hero__title .w > span')
-  gsap.timeline({ defaults: { ease: 'expo.out' } })
-    .from(heroWords, { yPercent: 110, rotate: 4, duration: 1.4, stagger: 0.06 }, 0.15)
-    .to('.hero [data-reveal]', { opacity: 1, y: 0, duration: 1.2, stagger: 0.12 }, 0.5)
+  const intro = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } })
+  intro.from(heroWords, { yPercent: 110, rotate: 4, duration: 1.4, stagger: 0.06 }, 0.15)
+    .to('.hero [data-reveal]', { opacity: 1, y: 0, duration: 1.2, stagger: 0.1 }, 0.2)
     .from('.nav', { opacity: 0, duration: 1 }, 0.6)
+  fontsReady.then(() => intro.play())
 
   // Vagues + pluie qui s'intensifie au scroll
   gsap.to('[data-wave="1"]', { attr: { d: 'M0 100 C 240 150 480 70 720 110 S 1200 160 1440 100 V220 H0Z' }, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut' })
