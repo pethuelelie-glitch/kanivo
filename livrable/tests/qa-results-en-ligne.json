@@ -1,0 +1,126 @@
+{
+  "url": "https://pethuelelie-glitch.github.io/kanivo/",
+  "date": "2026-10-22T16:15:44.958Z",
+  "runs": [
+    {
+      "name": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "reducedMotion": "no-preference",
+      "loadMs": 10501,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "checks": {
+        "overflowX": false,
+        "scrollWidth": 1440,
+        "innerWidth": 1440,
+        "h1": 1,
+        "headings": 31,
+        "imgsNoAlt": 0,
+        "counters": [
+          "59",
+          "26",
+          "5 000",
+          "6,3",
+          "23",
+          "443"
+        ],
+        "communes": 13,
+        "lang": "fr"
+      },
+      "sim": {
+        "extremeSansKanivo": {
+          "exposed": "407 474",
+          "safe": "69 271",
+          "red": "11",
+          "sms": "407 474"
+        },
+        "extremeAvecKanivo": {
+          "exposed": "277 614",
+          "safe": "176 978",
+          "red": "2",
+          "sms": "275 773"
+        },
+        "keyboardSelect": "Attécoubé NiveauRouge Score100/100 Population (2021)313 135 Habitants exposés30 311 Mis à l'abri5 153",
+        "report": "Signalement n° 2 418 reçu à Abobo. Obstruction estimée : 60 %. Le risque de la commune est recalculé sur la carte."
+      }
+    },
+    {
+      "name": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "reducedMotion": "no-preference",
+      "loadMs": 2170,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "checks": {
+        "overflowX": false,
+        "scrollWidth": 390,
+        "innerWidth": 390,
+        "h1": 1,
+        "headings": 31,
+        "imgsNoAlt": 0,
+        "counters": [
+          "59",
+          "26",
+          "5 000",
+          "6,3",
+          "23",
+          "443"
+        ],
+        "communes": 13,
+        "lang": "fr"
+      },
+      "sim": {
+        "extremeSansKanivo": {
+          "exposed": "407 474",
+          "safe": "69 271",
+          "red": "11",
+          "sms": "407 474"
+        },
+        "extremeAvecKanivo": {
+          "exposed": "277 614",
+          "safe": "176 978",
+          "red": "2",
+          "sms": "275 773"
+        },
+        "keyboardSelect": "Attécoubé NiveauRouge Score100/100 Population (2021)313 135 Habitants exposés30 311 Mis à l'abri5 153",
+        "report": "Signalement n° 2 418 reçu à Abobo. Obstruction estimée : 60 %. Le risque de la commune est recalculé sur la carte."
+      }
+    },
+    {
+      "name": "reduced-motion",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "reducedMotion": "reduce",
+      "loadMs": 1952,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "checks": {
+        "overflowX": false,
+        "scrollWidth": 1280,
+        "innerWidth": 1280,
+        "h1": 1,
+        "headings": 31,
+        "imgsNoAlt": 0,
+        "counters": [
+          "59",
+          "26",
+          "5 000",
+          "6,3",
+          "23",
+          "443"
+        ],
+        "communes": 13,
+        "lang": "fr"
+      },
+      "sim": null
+    }
+  ]
+}
