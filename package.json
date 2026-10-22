@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview --port 4173"
+    "preview": "vite preview --port 4173",
+    "qa": "node scripts/qa.mjs",
+    "deck": "node deck/build-deck.cjs"
   },
   "dependencies": {
     "@fontsource-variable/fraunces": "^5.3.0",

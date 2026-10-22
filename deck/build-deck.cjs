@@ -8,7 +8,6 @@ const sharp = require('sharp')
 const ROOT = path.resolve(__dirname, '..')
 const OUT = path.join(ROOT, 'livrable', 'Kanivo-Inondations-Abidjan.pptx')
 const CAPTURES = path.join(ROOT, 'livrable', 'captures')
-const SKILL = process.env.PPTX_SKILL_DIR
 
 const HEX = {
   ink: '04111A', ink2: '0B2230', line: '1C3A48', text: 'E9F1F2', muted: '93ABB2',
@@ -34,6 +33,22 @@ pres.subject = 'Analyse et proposition de solution numérique'
 const C = pres.SchemeColor
 const W = 13.333
 const M = 0.6
+
+/* ---------- Thème ---------- */
+// pptxgenjs n'écrit pas les couleurs du thème : on remplace le clrScheme et les polices de theme1.xml.
+async function applyTheme(file, theme) {
+  const JSZip = require('jszip')
+  const zip = await JSZip.loadAsync(fs.readFileSync(file))
+  const part = 'ppt/theme/theme1.xml'
+  let xml = await zip.file(part).async('string')
+  const slot = (k) => `<a:${k}><a:srgbClr val="${theme.colors[k]}"/></a:${k}>`
+  const keys = ['dk1', 'lt1', 'dk2', 'lt2', 'accent1', 'accent2', 'accent3', 'accent4', 'accent5', 'accent6', 'hlink', 'folHlink']
+  xml = xml.replace(/<a:clrScheme name="[^"]*">[\s\S]*?<\/a:clrScheme>/, `<a:clrScheme name="${theme.name}">${keys.map(slot).join('')}</a:clrScheme>`)
+  xml = xml.replace(/(<a:majorFont>\s*<a:latin typeface=")[^"]*"/, `$1${theme.headFontFace}"`)
+  xml = xml.replace(/(<a:minorFont>\s*<a:latin typeface=")[^"]*"/, `$1${theme.bodyFontFace}"`)
+  zip.file(part, xml)
+  fs.writeFileSync(file, await zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' }))
+}
 
 /* ---------- Visuels générés ---------- */
 function rainSvg(w, h, { glow = true, seed = 7, density = 140 } = {}) {
@@ -494,10 +509,7 @@ async function build() {
   })
 
   await pres.writeFile({ fileName: OUT })
-  if (SKILL) {
-    const { applyTheme } = require(path.join(SKILL, 'scripts', 'apply_theme.js'))
-    await applyTheme(OUT, THEME)
-  }
+  await applyTheme(OUT, THEME)
   console.log('OK', OUT)
 }
 
