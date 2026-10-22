@@ -1,11 +1,12 @@
 // Recette automatisée : node scripts/qa.mjs [url]
+// Variables : QA_CAPTURES (dossier des captures), QA_JSON (fichier de résultats).
 // Parcourt le site en desktop, mobile et reduced-motion, vérifie la console,
 // les débordements horizontaux et le simulateur, puis enregistre des captures.
 import { chromium } from 'playwright'
 import { mkdir, writeFile } from 'node:fs/promises'
 
 const URL = process.argv[2] || 'http://localhost:4173/'
-const OUT = 'livrable/captures'
+const OUT = process.env.QA_CAPTURES || 'livrable/captures'
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 await mkdir(OUT, { recursive: true })
 
@@ -98,7 +99,7 @@ await run('mobile', { viewport: { width: 390, height: 844 }, deviceScaleFactor: 
 await run('reduced-motion', { viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce' }, { shots: [['#chronologie', '03-chronologie', 0]] })
 
 await browser.close()
-await writeFile('livrable/tests/qa-results.json', JSON.stringify(results, null, 2))
+await writeFile(process.env.QA_JSON || 'livrable/tests/qa-results.json', JSON.stringify(results, null, 2))
 const bad = results.runs.filter((r) => r.consoleErrors.length || r.failedRequests.length || r.checks.overflowX)
 console.log(JSON.stringify(results.runs.map((r) => ({ name: r.name, loadMs: r.loadMs, errors: r.consoleErrors.length, failed: r.failedRequests.length, overflowX: r.checks.overflowX, counters: r.checks.counters.join(' '), sim: r.sim && { sans: r.sim.extremeSansKanivo, avec: r.sim.extremeAvecKanivo } })), null, 2))
 process.exit(bad.length ? 1 : 0)
