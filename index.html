@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kanivo — Abidjan, la pluie ne tue pas seule</title>
+  <meta name="description" content="Inondations à Abidjan : analyse sourcée et Kanivo, une plateforme citoyenne et prédictive pour signaler les caniveaux bouchés, prioriser le curage et alerter les quartiers à risque." />
+  <meta name="theme-color" content="#04111a" />
+  <meta property="og:title" content="Kanivo — Abidjan, la pluie ne tue pas seule" />
+  <meta property="og:description" content="59 morts après les pluies du 28-29 juin 2026. Voir, prioriser, prévenir : la réponse numérique aux inondations d'Abidjan." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./og.png" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" />
+</head>
+<body>
+  <a class="skip" href="#main">Aller au contenu</a>
+
+  <header class="nav" data-nav>
+    <a class="brand" href="#top" aria-label="Kanivo, retour en haut">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 20c4 0 4-3 8-3s4 3 8 3 4-3 8-3" /><path d="M4 26c4 0 4-3 8-3s4 3 8 3 4-3 8-3" /><path d="M16 3c3 4 5 7 5 9.5a5 5 0 0 1-10 0C11 10 13 7 16 3z" class="drop" /></svg>
+      <span>Kanivo</span>
+    </a>
+    <nav aria-label="Sections">
+      <ul>
+        <li><a href="#constat">Constat</a></li>
+        <li><a href="#causes">Causes</a></li>
+        <li><a href="#solution">Solution</a></li>
+        <li><a href="#prototype">Prototype</a></li>
+        <li><a href="#roadmap">Feuille de route</a></li>
+      </ul>
+    </nav>
+    <a class="btn btn--small" href="#prototype">Simuler une pluie</a>
+    <div class="nav__progress" aria-hidden="true"><span data-progress></span></div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <canvas class="hero__rain" data-rain aria-hidden="true"></canvas>
+      <div class="hero__glow" aria-hidden="true"></div>
+      <div class="hero__inner">
+        <p class="eyebrow" data-reveal>Abidjan · Saison des pluies · Mai → Juillet</p>
+        <h1 id="hero-title" class="hero__title" data-split>
+          À Abidjan, la pluie <em>ne tue pas</em> seule.
+        </h1>
+        <p class="hero__lead" data-reveal>
+          Dans la nuit du 28 au 29 juin 2026, des pluies diluviennes ont fait <strong>59 morts</strong>. Derrière chaque drame,
+          on retrouve des caniveaux bouchés, des alertes qui n'arrivent pas et des pentes réoccupées.
+          <strong>Kanivo</strong> relie ces trois angles morts.
+        </p>
+        <div class="hero__cta" data-reveal>
+          <a class="btn" href="#prototype">Lancer le simulateur <span aria-hidden="true">→</span></a>
+          <a class="btn btn--ghost" href="#constat">Lire l'analyse</a>
+        </div>
+      </div>
+      <div class="hero__scroll" aria-hidden="true"><span></span>Défiler</div>
+      <svg class="hero__water" viewBox="0 0 1440 220" preserveAspectRatio="none" aria-hidden="true">
+        <path data-wave="1" d="M0 120 C 240 80 480 160 720 120 S 1200 80 1440 120 V220 H0Z" />
+        <path data-wave="2" d="M0 150 C 240 120 480 190 720 150 S 1200 120 1440 150 V220 H0Z" />
+      </svg>
+    </section>
+
+    <!-- CONSTAT -->
+    <section class="section constat" id="constat" aria-labelledby="constat-title">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="eyebrow">01 — Le constat</p>
+          <h2 id="constat-title" data-split>Chaque saison, le même bilan. Et il s'alourdit.</h2>
+        </header>
+        <ul class="stats" role="list">
+          <li class="stat stat--alert" data-reveal>
+            <span class="stat__num" data-count="59">0</span>
+            <span class="stat__label">morts annoncés après les pluies du 28-29 juin 2026</span>
+            <cite>Gouvernement, 1<sup>er</sup> juil. 2026</cite>
+          </li>
+          <li class="stat" data-reveal>
+            <span class="stat__num"><span data-count="26">0</span><small>%</small></span>
+            <span class="stat__label">du district exposés aux inondations et aux glissements de terrain</span>
+            <cite>GFDRR City Scan</cite>
+          </li>
+          <li class="stat" data-reveal>
+            <span class="stat__num"><span data-count="5000" data-format="space">0</span><small>t</small></span>
+            <span class="stat__label">de déchets produits chaque jour. Une partie finit dans les caniveaux.</span>
+            <cite>Ministère de la Salubrité, mars 2026</cite>
+          </li>
+          <li class="stat" data-reveal>
+            <span class="stat__num"><span data-count="6.3" data-decimals="1">0</span><small>M</small></span>
+            <span class="stat__label">habitants dans le District autonome d'Abidjan</span>
+            <cite>INS, RGPH 2021</cite>
+          </li>
+          <li class="stat" data-reveal>
+            <span class="stat__num"><span data-count="23">0</span><small>%</small></span>
+            <span class="stat__label">des écoles et 18 % des hôpitaux situés en zone inondable</span>
+            <cite>GFDRR City Scan</cite>
+          </li>
+          <li class="stat" data-reveal>
+            <span class="stat__num"><span data-count="443">0</span><small>M$</small></span>
+            <span class="stat__label">de pertes probables pour une crue centennale (modèle national)</span>
+            <cite>UNDRR</cite>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHRONOLOGIE (pin + scroll horizontal) -->
+    <section class="chrono" id="chronologie" aria-labelledby="chrono-title">
+      <div class="chrono__pin">
+        <div class="wrap chrono__head">
+          <p class="eyebrow">02 — Trente ans de répétition</p>
+          <h2 id="chrono-title">Un drame récurrent, pas un accident.</h2>
+        </div>
+        <ol class="chrono__track" data-chrono-track>
+          <li class="chrono__item">
+            <span class="chrono__year">1996</span>
+            <span class="chrono__toll">28 morts</span>
+            <p>Le plus lourd bilan longtemps cité dans la mémoire collective abidjanaise.</p>
+          </li>
+          <li class="chrono__item">
+            <span class="chrono__year">2018</span>
+            <span class="chrono__toll">18 morts</span>
+            <p>Nuit du 18 au 19 juin. Environ 1 140 bâtiments endommagés, qui déclenchent une évaluation post-catastrophe de la Banque mondiale.</p>
+          </li>
+          <li class="chrono__item">
+            <span class="chrono__year">2024</span>
+            <span class="chrono__toll">24 morts</span>
+            <p>Pluies du 13 au 22 juin. Deux disparus. Les habitants accusent les caniveaux bouchés et les constructions sur les canalisations.</p>
+          </li>
+          <li class="chrono__item">
+            <span class="chrono__year">2025</span>
+            <span class="chrono__toll">6+ morts</span>
+            <p>Dès le début de la saison. Glissement de terrain à Mossikro (Attécoubé).</p>
+          </li>
+          <li class="chrono__item chrono__item--now">
+            <span class="chrono__year">2026</span>
+            <span class="chrono__toll">59 morts</span>
+            <p>Nuit du 28 au 29 juin. Une vingtaine de victimes à Attécoubé, sur des sites déjà évacués puis réoccupés.</p>
+          </li>
+          <li class="chrono__item chrono__item--next">
+            <span class="chrono__year">2027</span>
+            <span class="chrono__toll">?</span>
+            <p>La prochaine saison commence en mai. Le curage et l'alerte se préparent maintenant.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CAUSES -->
+    <section class="section causes" id="causes" aria-labelledby="causes-title">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="eyebrow">03 — Pourquoi ça échoue</p>
+          <h2 id="causes-title" data-split>Quatre causes qui s'entretiennent les unes les autres.</h2>
+        </header>
+        <div class="loop">
+          <svg class="loop__ring" viewBox="0 0 400 400" aria-hidden="true">
+            <circle cx="200" cy="200" r="150" data-draw />
+            <circle cx="200" cy="200" r="150" class="loop__pulse" />
+          </svg>
+          <ol class="loop__list">
+            <li class="cause" data-reveal>
+              <span class="cause__n">A</span>
+              <h3>Drainage obstrué</h3>
+              <p>Les caniveaux se bouchent de déchets, de sédiments et de constructions. Environ 2 000 t de déchets échappaient chaque jour à la collecte (2016). Le curage reste <strong>réactif</strong>.</p>
+            </li>
+            <li class="cause" data-reveal>
+              <span class="cause__n">B</span>
+              <h3>Ville plus rapide que le plan</h3>
+              <p>La population a plus que doublé depuis 2001. Bassins d'orage et talwegs sont occupés par des habitations.</p>
+            </li>
+            <li class="cause" data-reveal>
+              <span class="cause__n">C</span>
+              <h3>Retour en zone rouge</h3>
+              <p>Sans solution de relogement suivie, les sites évacués sont réoccupés. C'était le cas à Attécoubé en 2026.</p>
+            </li>
+            <li class="cause" data-reveal>
+              <span class="cause__n">D</span>
+              <h3>Alerte sans dernier kilomètre</h3>
+              <p>La chaîne SODEXAM → CICG → communes passe par WhatsApp et des bénévoles. Les messages sont génériques, en français, et rien ne confirme qu'ils ont été reçus.</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- SILOS -->
+    <section class="section silos" id="silos" aria-labelledby="silos-title">
+      <div class="wrap silos__grid">
+        <div class="silos__text">
+          <p class="eyebrow">04 — L'angle mort</p>
+          <h2 id="silos-title" data-split>Tout le monde a une pièce du puzzle. Personne ne l'assemble.</h2>
+          <p class="lead" data-reveal>La SODEXAM connaît la pluie. L'ANAGED connaît ses camions. L'ONPC connaît les zones rouges. Les habitants savent quel caniveau déborde. <strong>Aucun système ne relie l'état réel des caniveaux, la pluie prévue et les personnes exposées.</strong></p>
+          <p class="muted" data-reveal>Les grands travaux (bassin du Gourou, PAACA : 16,15 km de canaux) augmentent la capacité de drainage. Mais un canal neuf bouché par les déchets la perd en une saison.</p>
+        </div>
+        <div class="silos__viz" data-silos aria-hidden="true">
+          <svg viewBox="0 0 420 420">
+            <g class="silos__links">
+              <line x1="210" y1="210" x2="80" y2="80" /><line x1="210" y1="210" x2="340" y2="80" />
+              <line x1="210" y1="210" x2="80" y2="340" /><line x1="210" y1="210" x2="340" y2="340" />
+              <line x1="210" y1="210" x2="210" y2="40" /><line x1="210" y1="210" x2="210" y2="380" />
+            </g>
+            <g class="silos__node" data-node><circle r="44" cx="80" cy="80" /><text x="80" y="84">SODEXAM</text></g>
+            <g class="silos__node" data-node><circle r="44" cx="340" cy="80" /><text x="340" y="84">ANAGED</text></g>
+            <g class="silos__node" data-node><circle r="44" cx="80" cy="340" /><text x="80" y="344">ONPC</text></g>
+            <g class="silos__node" data-node><circle r="44" cx="340" cy="340" /><text x="340" y="344">Communes</text></g>
+            <g class="silos__node" data-node><circle r="34" cx="210" cy="40" /><text x="210" y="44">Bailleurs</text></g>
+            <g class="silos__node" data-node><circle r="34" cx="210" cy="380" /><text x="210" y="384">Habitants</text></g>
+            <g class="silos__core"><circle r="58" cx="210" cy="210" /><text x="210" y="216">Kanivo</text></g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOLUTION : téléphone sticky -->
+    <section class="section solution" id="solution" aria-labelledby="solution-title">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="eyebrow">05 — La solution</p>
+          <h2 id="solution-title" data-split>Kanivo : voir, prioriser, prévenir.</h2>
+          <p class="lead" data-reveal>Quatre modules et une seule boucle de données. Conçu d'abord pour les canaux sans smartphone : USSD, SMS, vocal et WhatsApp.</p>
+        </header>
+        <div class="solution__grid">
+          <div class="phone-wrap">
+            <div class="phone" data-phone aria-hidden="true">
+              <div class="phone__notch"></div>
+              <div class="screen is-active" data-screen="0">
+                <div class="chat">
+                  <div class="chat__head"><b>Kanivo</b><small>WhatsApp · en ligne</small></div>
+                  <p class="bubble">Bonjour 👋 Envoie la photo du caniveau bouché. Ta position est ajoutée automatiquement.</p>
+                  <div class="bubble bubble--me bubble--photo"><span class="drain"></span><small>Abobo · Gare · 07:42</small></div>
+                  <p class="bubble">Obstruction estimée : <b>78 %</b>. Signalement n° 2 418 transmis à la brigade d'Abobo. <b>+100 F</b> de crédit à la validation.</p>
+                  <p class="bubble bubble--me">Merci 🙏🏾</p>
+                </div>
+              </div>
+              <div class="screen" data-screen="1">
+                <div class="mini-map">
+                  <div class="mini-map__title">Risque · prochaines 24 h</div>
+                  <span class="dot dot--r" style="left:38%;top:34%"></span>
+                  <span class="dot dot--r" style="left:30%;top:50%"></span>
+                  <span class="dot dot--o" style="left:55%;top:42%"></span>
+                  <span class="dot dot--o" style="left:20%;top:46%"></span>
+                  <span class="dot dot--y" style="left:62%;top:66%"></span>
+                  <span class="dot dot--g" style="left:78%;top:44%"></span>
+                  <div class="mini-map__lagoon"></div>
+                  <div class="legend"><span>Faible</span><i></i><span>Critique</span></div>
+                </div>
+              </div>
+              <div class="screen" data-screen="2">
+                <div class="tasks">
+                  <div class="tasks__head">Ordres de curage · Brigade Attécoubé</div>
+                  <div class="task task--p1"><b>P1</b><span>Mossikro, talweg nord</span><em>Risque 94</em></div>
+                  <div class="task task--p1"><b>P1</b><span>Boribana, canal principal</span><em>Risque 88</em></div>
+                  <div class="task task--p2"><b>P2</b><span>Santé 3, grille avaloir</span><em>Risque 71</em></div>
+                  <div class="task task--done"><b>✓</b><span>Agban village, caniveau</span><em>Curé · photo</em></div>
+                  <div class="tasks__kpi"><span>Points critiques curés</span><strong>64 %</strong></div>
+                </div>
+              </div>
+              <div class="screen" data-screen="3">
+                <div class="lock">
+                  <div class="lock__time">21:14</div>
+                  <div class="notif">
+                    <small>SMS · ALERTE KANIVO</small>
+                    <p><b>Mossikro : pluie &gt; 120 mm cette nuit.</b> Quittez les maisons en bas de pente avant 23 h. Refuge : EPP Mossikro 2. Tapez 1 si vous êtes en sécurité.</p>
+                  </div>
+                  <div class="notif notif--voice">
+                    <small>Message vocal · Dioula</small>
+                    <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ol class="modules">
+            <li class="module" data-module="0">
+              <span class="module__k">01 · Signal</span>
+              <h3>Signaler un caniveau en 20 secondes</h3>
+              <p>Par WhatsApp, l'USSD <code>*700#</code> ou une appli web légère : photo, position GPS, gravité. Un modèle de vision estime l'obstruction et écarte les doublons. Chaque signalement validé rapporte du crédit mobile money.</p>
+            </li>
+            <li class="module" data-module="1">
+              <span class="module__k">02 · Carte de risque</span>
+              <h3>Un score par îlot de 250 m, chaque heure</h3>
+              <p><code>pluie prévue × obstruction × pente × population exposée</code>. Les prévisions SODEXAM rencontrent enfin l'état réel des caniveaux.</p>
+            </li>
+            <li class="module" data-module="2">
+              <span class="module__k">03 · Curage priorisé</span>
+              <h3>Curer avant la pluie, pas après</h3>
+              <p>Ordres de mission classés par risque, tournées optimisées, photo avant/après géolocalisée. Les prestataires sont payés au résultat et chaque commune voit ses indicateurs.</p>
+            </li>
+            <li class="module" data-module="3">
+              <span class="module__k">04 · Alerte dernier kilomètre</span>
+              <h3>Une alerte qu'on comprend et qui dit quoi faire</h3>
+              <p>Géociblée 6 à 24 h avant l'épisode : SMS, vocal en dioula, baoulé, nouchi et français, <i>cell broadcast</i>. Une action concrète, un refuge, et un accusé de réception « tapez 1 ».</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROTOTYPE -->
+    <section class="section proto" id="prototype" aria-labelledby="proto-title">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="eyebrow">06 — Prototype interactif</p>
+          <h2 id="proto-title" data-split>Faites pleuvoir sur Abidjan.</h2>
+          <p class="lead" data-reveal>Réglez la pluie, le curage et la couverture d'alerte, puis observez le risque commune par commune. Les populations viennent du RGPH 2021 ; les indices de vulnérabilité sont <strong>illustratifs</strong> et seront calibrés pendant le pilote.</p>
+        </header>
+
+        <div class="sim" data-sim>
+          <div class="sim__controls">
+            <fieldset class="seg" aria-label="Scénario">
+              <legend class="sr-only">Mode</legend>
+              <button type="button" class="seg__btn" data-mode="sans" aria-pressed="true">Sans Kanivo</button>
+              <button type="button" class="seg__btn" data-mode="avec" aria-pressed="false">Avec Kanivo</button>
+            </fieldset>
+
+            <div class="field">
+              <label for="rain">Pluie sur 24 h <output for="rain" data-out="rain">110 mm</output></label>
+              <input id="rain" type="range" min="10" max="250" step="5" value="110" />
+              <div class="chips" role="group" aria-label="Scénarios de pluie">
+                <button type="button" class="chip" data-rain="45">Averse · 45 mm</button>
+                <button type="button" class="chip" data-rain="110">Forte · 110 mm</button>
+                <button type="button" class="chip" data-rain="210">Extrême · 210 mm</button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="curage">Points critiques curés avant la pluie <output for="curage" data-out="curage">15 %</output></label>
+              <input id="curage" type="range" min="0" max="100" step="5" value="15" />
+            </div>
+            <div class="field">
+              <label for="alerte">Habitants exposés joints par l'alerte <output for="alerte" data-out="alerte">20 %</output></label>
+              <input id="alerte" type="range" min="0" max="100" step="5" value="20" />
+            </div>
+
+            <dl class="kpis" aria-live="polite">
+              <div><dt>Habitants exposés</dt><dd data-kpi="exposed">—</dd></div>
+              <div><dt>Mis à l'abri à temps</dt><dd data-kpi="safe">—</dd></div>
+              <div><dt>Communes en alerte rouge</dt><dd data-kpi="red">—</dd></div>
+              <div><dt>Alertes à envoyer</dt><dd data-kpi="sms">—</dd></div>
+            </dl>
+          </div>
+
+          <div class="sim__map">
+            <svg viewBox="0 0 800 520" role="group" aria-label="Carte schématique des 13 communes du District d'Abidjan" data-map>
+              <defs>
+                <radialGradient id="g-red" r="0.5"><stop offset="0" stop-color="#ff5a52" stop-opacity=".5" /><stop offset="1" stop-color="#ff5a52" stop-opacity="0" /></radialGradient><radialGradient id="g-orange" r="0.5"><stop offset="0" stop-color="#ff8a1f" stop-opacity=".5" /><stop offset="1" stop-color="#ff8a1f" stop-opacity="0" /></radialGradient><radialGradient id="g-yellow" r="0.5"><stop offset="0" stop-color="#ffc54d" stop-opacity=".5" /><stop offset="1" stop-color="#ffc54d" stop-opacity="0" /></radialGradient><radialGradient id="g-green" r="0.5"><stop offset="0" stop-color="#22c08a" stop-opacity=".5" /><stop offset="1" stop-color="#22c08a" stop-opacity="0" /></radialGradient>
+                <pattern id="p-grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="rgba(255,255,255,.04)" /></pattern>
+              </defs>
+              <rect width="800" height="520" fill="url(#p-grid)" />
+              <path class="map__lagoon" d="M0 318 C 90 300 150 330 250 310 C 330 296 360 340 450 330 C 520 322 560 300 640 312 C 700 320 760 300 800 306 L800 350 C 740 346 700 362 640 352 C 560 340 520 358 455 366 C 370 376 330 336 250 350 C 160 366 90 338 0 352Z" />
+              <path class="map__sea" d="M0 498 C 200 486 400 506 800 490 V520 H0Z" />
+              <text class="map__label-water" x="140" y="342">Lagune Ébrié</text>
+              <text class="map__label-water" x="640" y="512">Océan Atlantique</text>
+              <g data-communes></g>
+            </svg>
+            <aside class="sim__detail" data-detail aria-live="polite">
+              <p class="muted">Sélectionnez une commune sur la carte.</p>
+            </aside>
+          </div>
+
+          <div class="sim__list">
+            <h3>Priorités de curage et d'alerte</h3>
+            <ol data-priority></ol>
+            <p class="fine">Modèle illustratif, non calibré : aléa = f(pluie × (1 + obstruction résiduelle)), risque = aléa × vulnérabilité. Il sert à rendre visible une logique de décision, pas à prédire un bilan.</p>
+          </div>
+        </div>
+
+        <form class="report" data-report aria-labelledby="report-title">
+          <h3 id="report-title">Essayez le module Signal</h3>
+          <p class="muted">Simulation locale : rien n'est envoyé.</p>
+          <div class="report__row">
+            <label class="sr-only" for="r-commune">Commune</label>
+            <select id="r-commune" data-r-commune></select>
+            <label class="sr-only" for="r-level">Gravité</label>
+            <select id="r-level">
+              <option value="0.3">Partiellement bouché</option>
+              <option value="0.6" selected>Très bouché</option>
+              <option value="0.9">Totalement obstrué, déborde</option>
+            </select>
+            <button class="btn" type="submit">Signaler</button>
+          </div>
+          <p class="report__msg" data-r-msg role="status"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- MODELE ECONOMIQUE -->
+    <section class="section model" id="modele" aria-labelledby="model-title">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="eyebrow">07 — Modèle économique</p>
+          <h2 id="model-title" data-split>Financé par ceux qui paient déjà le coût des inondations.</h2>
+        </header>
+        <div class="cards">
+          <article class="card" data-reveal><h3>SaaS public</h3><p>District, ANAGED, 13 communes : carte de risque, ordres de mission, indicateurs.</p><span class="card__tag">3 à 6 M FCFA / commune / an</span></article>
+          <article class="card" data-reveal><h3>Bailleurs</h3><p>Une ligne « entretien et résilience » de 1 à 2 % dans les projets de drainage (Banque mondiale, BAD, AFD).</p><span class="card__tag">Préserver des ouvrages à 315 M$</span></article>
+          <article class="card" data-reveal><h3>Assurance</h3><p>Une API de risque hyperlocal pour la micro-assurance et l'assurance paramétrique.</p><span class="card__tag">Accès API au volume</span></article>
+          <article class="card" data-reveal><h3>Opérateurs télécoms</h3><p>Diffusion des alertes d'intérêt public en SMS et <i>cell broadcast</i>, au titre de la RSE.</p><span class="card__tag">Canal à prix coûtant</span></article>
+        </div>
+        <p class="fine">Hypothèses de l'équipe Kanivo, à valider pendant le pilote.</p>
+      </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section class="section roadmap" id="roadmap" aria-labelledby="roadmap-title">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="eyebrow">08 — Feuille de route</p>
+          <h2 id="roadmap-title" data-split>Prêts avant la saison 2027.</h2>
+        </header>
+        <ol class="steps" data-steps>
+          <li class="step"><span class="step__date">Nov. 26 → Janv. 27</span><h3>Cadrage</h3><p>Convention avec l'ANAGED, 2 communes pilotes (Attécoubé, Abobo), accès aux données SODEXAM.</p></li>
+          <li class="step"><span class="step__date">Févr. → Avr. 27</span><h3>Pilote Signal</h3><p>Bot WhatsApp et USSD, 100 Brigades vertes, cartographie complète des caniveaux primaires.</p><b class="step__kpi">≥ 5 000 signalements</b></li>
+          <li class="step"><span class="step__date">Avr. → Mai 27</span><h3>Avant-saison</h3><p>Carte de risque v1 et ordres de curage priorisés.</p><b class="step__kpi">≥ 80 % des points critiques curés</b></li>
+          <li class="step"><span class="step__date">Mai → Juil. 27</span><h3>Saison</h3><p>Alertes géociblées multilingues avec accusé de réception.</p><b class="step__kpi">Réception &lt; 15 min, ≥ 70 % de joignabilité</b></li>
+          <li class="step"><span class="step__date">2028</span><h3>Passage à l'échelle</h3><p>13 communes, API pour les assureurs, villes secondaires (San-Pédro, Bouaké).</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- IMPACT & RISQUES -->
+    <section class="section impact" id="impact" aria-labelledby="impact-title">
+      <div class="wrap impact__grid">
+        <div>
+          <p class="eyebrow">09 — Impact visé</p>
+          <h2 id="impact-title" data-split>Ce que l'on mesurera.</h2>
+          <ul class="impact__list">
+            <li data-reveal><b>Vies</b> Évacuation anticipée et curage préventif dans les communes pilotes.</li>
+            <li data-reveal><b>Ouvrages</b> Des centaines de millions de dollars d'infrastructures qui gardent leur capacité.</li>
+            <li data-reveal><b>Emplois</b> Environ 1 300 Brigades vertes à l'échelle du district.</li>
+            <li data-reveal><b>Gouvernance</b> Les premiers indicateurs publics d'entretien du drainage.</li>
+          </ul>
+        </div>
+        <div>
+          <p class="eyebrow">Risques et parades</p>
+          <dl class="risks">
+            <div data-reveal><dt>Fraude au signalement</dt><dd>Contrôle des doublons et métadonnées par IA, géofence, audits aléatoires, plafonds.</dd></div>
+            <div data-reveal><dt>Signalements sans suite</dt><dd>Indicateurs publics, délais garantis, prestataires payés au résultat.</dd></div>
+            <div data-reveal><dt>Adoption</dt><dd>USSD, SMS et vocal, relais des chefs de quartier, récompense.</dd></div>
+            <div data-reveal><dt>Données personnelles</dt><dd>Loi 2013-450 et ARTCI : minimisation et anonymisation.</dd></div>
+            <div data-reveal><dt>Lassitude face aux alertes</dt><dd>Seuils calibrés, niveaux gradués, retour d'expérience après chaque épisode.</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- MASTERCLASS -->
+    <section class="section master" id="masterclass" aria-labelledby="master-title">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="eyebrow">10 — Masterclass</p>
+          <h2 id="master-title" data-split>Conçu de bout en bout par Claude Opus 5.5.</h2>
+          <p class="lead" data-reveal>Recherche sourcée, analyse, deck, site, tests et déploiement, réalisés en autonomie dans une seule session, avec un commit atomique à chaque étape.</p>
+        </header>
+        <ol class="pipeline">
+          <li data-reveal><span>01</span><b>Recherche</b> 18 sources datées (2016-2026) : Banque mondiale, GFDRR, UNDRR, INS, presse.</li>
+          <li data-reveal><span>02</span><b>Analyse</b> Arbre des causes, cartographie des acteurs, limites de l'existant.</li>
+          <li data-reveal><span>03</span><b>Produit</b> 4 modules, modèle économique, feuille de route, risques.</li>
+          <li data-reveal><span>04</span><b>Site</b> Vite, GSAP ScrollTrigger, Lenis, canvas et SVG. Aucun framework.</li>
+          <li data-reveal><span>05</span><b>Deck</b> PowerPoint de niveau cabinet de conseil, vérifié visuellement.</li>
+          <li data-reveal><span>06</span><b>Qualité</b> Tests navigateur desktop et mobile, Lighthouse, accessibilité, <code>prefers-reduced-motion</code>.</li>
+        </ol>
+        <div class="master__links">
+          <a class="btn" href="https://github.com/pethuelelie-glitch/kanivo">Code source sur GitHub</a>
+          <a class="btn btn--ghost" href="https://github.com/pethuelelie-glitch/kanivo/tree/main/livrable">Livrable et deck</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="sources">
+    <div class="wrap">
+      <h2 class="footer__title">Sources principales</h2>
+      <ul class="sources">
+        <li><a href="https://fr.allafrica.com/stories/202607010683.html">Gouvernement via Fratmat/AllAfrica : 59 morts (1<sup>er</sup> juil. 2026)</a></li>
+        <li><a href="https://afrique.le360.ma/societe/cote-divoire-inondations-mortelles-a-abidjan-des-milliers-de-sans-abri_2H7PG7CJ5VHCPMHUCA5SGL2544/">Le360 : bilan ONPC de juin 2024</a></li>
+        <li><a href="https://www.gfdrr.org/en/feature-story/results-resilience-informing-urban-resilience-planning-cote-divoire">GFDRR : City Scan Abidjan</a></li>
+        <li><a href="https://ewsdata.rightsindevelopment.org/files/documents/08/WB-P168308.pdf">Banque mondiale : projet P168308</a></li>
+        <li><a href="https://www.undrr.org/quick/101888">UNDRR : profil de risque de la Côte d'Ivoire</a></li>
+        <li><a href="https://fr.allafrica.com/stories/202603130497.html">Ministère de la Salubrité : 5 000 t de déchets par jour (mars 2026)</a></li>
+        <li><a href="https://citypopulation.de/en/ivorycoast/abidjancity/">INS, RGPH 2021 : population par commune</a></li>
+        <li><a href="https://www.tresor.economie.gouv.fr/Articles/2022/08/05/histoire-de-fasep-mise-en-place-d-un-systeme-de-vigilance-meteorologique-a-abidjan">DG Trésor : vigilance météo à Abidjan</a></li>
+      </ul>
+      <p class="fine">Liste complète dans <a href="https://github.com/pethuelelie-glitch/kanivo/blob/main/livrable/rapport-analyse.md">le rapport d'analyse</a>. Kanivo est un concept : les estimations économiques et d'impact restent à valider.</p>
+      <p class="footer__sig">Kanivo · Abidjan · 2026</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
